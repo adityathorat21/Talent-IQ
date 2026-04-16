@@ -5,8 +5,7 @@ import User from "../models/User.js"
 export const inngest = new Inngest({id: "talent-iq"});
 
 const syncUser = inngest.createFunction(
-    {id:"sync-user"},
-    {event:"clerk/user.created"},
+    {id:"sync-user", triggers: {event:"clerk/user.created"}},
     async({event}) => {
         await connectDB()
 
@@ -15,7 +14,7 @@ const syncUser = inngest.createFunction(
         const newUser = {
             clerkId:id,
             email:email_address[0]?.email_address,
-            name:`${first_name || ""} ${last_name || ""}`,
+            name:`${first_name || ""} ${last_name || ""}`.trim(),
             profileImage:image_url,
         }
 
@@ -25,8 +24,7 @@ const syncUser = inngest.createFunction(
 )
 
 const deleteUserFromDB = inngest.createFunction(
-    {id:"delete-uset-from-db"},
-    {event:"clerk/user.deleted"},
+    {id:"delete-user-from-db", triggers: {event:"clerk/user.deleted"}},
     async({event}) => {
         await connectDB()
 
